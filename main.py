@@ -101,6 +101,7 @@ if __name__ == '__main__':
 
     seq_list = parseInput(input_filename)
 
+    print("**************************** Generated Sequences ****************************")
     for seq in seq_list:
         print(seq)
 
