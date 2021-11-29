@@ -1,4 +1,3 @@
-import sys
 from input_handler import parseInput
 from result_comparator import compare
 
@@ -21,10 +20,6 @@ mismatch_penalty_matrix = [
 
 def calculatePenalty(align_x, align_y):
     m, n = len(align_x), len(align_y)
-
-    if m != n:
-        print(False)
-
     penalty = 0
 
     for i in range(m):
@@ -45,7 +40,7 @@ def mismatch_penalty(xi, yj):
 def dp_alignment(seq_x, seq_y):
     m, n = len(seq_x), len(seq_y)
     opt = [[0 for j in range(n + 1)] for i in range(m + 1)]
-    gap_flag = [[[0, 0] for j in range(n)] for i in range(m)]
+    path_info = [[0 for j in range(n + 1)] for i in range(m + 1)]
 
     for i in range(m + 1):
         opt[i][0] = i * gap_penalty
@@ -62,58 +57,79 @@ def dp_alignment(seq_x, seq_y):
             opt[i][j] = min_cost
 
             if case_1 == min_cost:
-                gap_flag[i - 1][j - 1] = [0, 0]
+                path_info[i][j] = 1
             elif case_2 == min_cost:
-                gap_flag[i - 1][j - 1] = [0, 1]
-            elif case_3 == min_cost:
-                gap_flag[i - 1][j - 1] = [1, 0]
+                path_info[i][j] = 2
+            else:
+                path_info[i][j] = 3
 
-    return opt[m][n], gap_flag
+    return opt[m][n], path_info
 
 
-def get_alignment(seq_x, seq_y, gap_flag):
+def get_alignment(seq_x, seq_y, path_info):
     align_x = ""
     align_y = ""
     m, n = len(seq_x), len(seq_y)
-    i = m - 1
-    j = n - 1
-    while i >= 0 and j >= 0:
-        gap = gap_flag[i][j]
-        if gap[0] == 1:
-            align_x = "_" + align_x
-            align_y = seq_y[j] + align_y
+    i = m
+    j = n
+    penalty = 0
+    while i >= 1 or j >= 1:
+        move = path_info[i][j]
+        if move == 1:
+            penalty += mismatch_penalty(seq_x[i - 1], seq_y[j - 1])
+            align_x = seq_x[i - 1] + align_x
+            align_y = seq_y[j - 1] + align_y
+            i = i - 1
             j = j - 1
-        elif gap[1] == 1:
-            align_x = seq_x[i] + align_x
+        elif move == 2:
+            penalty += gap_penalty
+            align_x = seq_x[i - 1] + align_x
             align_y = "_" + align_y
             i = i - 1
-        else:
-            align_x = seq_x[i] + align_x
-            align_y = seq_y[j] + align_y
-            i = i - 1
+        elif move == 3:
+            penalty += gap_penalty
+            align_x = "_" + align_x
+            align_y = seq_y[j - 1] + align_y
             j = j - 1
-    return align_x, align_y
+        else:
+            penalty += gap_penalty
+            if j >= 1:
+                align_x = "_" + align_x
+                align_y = seq_y[j - 1] + align_y
+                j = j - 1
+            elif i >= 1:
+                penalty += gap_penalty
+                align_x = seq_x[i - 1] + align_x
+                align_y = "_" + align_y
+                i = i - 1
+            else:
+                break
+    return align_x, align_y, penalty
 
 
 if __name__ == '__main__':
-    input_filename = input("Please type in the path of input file: ") or "test_cases/input1.txt"
-    print("input file is: " + input_filename)
+    # input_filename = input("Please type in the path of input file: ") or "test_cases/input1.txt"
+    # print("input file is: " + input_filename)
+    #
+    # seq_list = parseInput(input_filename)
 
-    seq_list = parseInput(input_filename)
+    seq_list = ["AGCT", "ACCT"]
 
     print("**************************** Generated Sequences ****************************")
     for seq in seq_list:
         print(seq)
 
-    opt_cost, gap_rule = dp_alignment(*seq_list)
-    align_x, align_y = get_alignment(seq_list[0], seq_list[1], gap_rule)
+    opt_cost, path = dp_alignment(*seq_list)
+    alignment_x, alignment_y, gen_cost = get_alignment(seq_list[0], seq_list[1], path)
 
-    compare("test_cases/output1.txt", align_x, align_y)
+    print("**************************** Alignments ****************************")
+    print(alignment_x)
+    print(alignment_y)
 
-    # print(align_x)
-    # print(align_y)
-    #
-    # print(opt_cost)
-    # print(calculatePenalty(align_x, align_y))
+    print("**************************** Cost Comparation ****************************")
+    print("Generated:\t" + str(opt_cost))
+    print("Calculated:\t" + str(gen_cost))
+
+    # compare("test_cases/output1.txt", alignment_x, alignment_y)
 
 
