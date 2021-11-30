@@ -34,7 +34,7 @@ def dp_alignment(seq_x, seq_y):
     return opt[m][n], path_info
 
 
-def get_alignment(seq_x, seq_y, path_info):
+def get_dp_alignment(seq_x, seq_y, path_info):
     align_x = ""
     align_y = ""
     i, j = len(seq_x), len(seq_y)
@@ -82,7 +82,7 @@ if __name__ == '__main__':
         print(seq)
 
     opt_cost, path = dp_alignment(*seq_list)
-    alignment_x, alignment_y = get_alignment(seq_list[0], seq_list[1], path)
+    alignment_x, alignment_y = get_dp_alignment(seq_list[0], seq_list[1], path)
 
     print("**************************** Alignments ****************************")
     print(alignment_x)
