@@ -8,7 +8,7 @@ from utils import gap_penalty, mismatch_penalty, calculatePenalty, compare_outpu
 def dp_alignment(seq_x, seq_y):
     m, n = len(seq_x), len(seq_y)
     opt = [[0 for j in range(n + 1)] for i in range(m + 1)]
-    path_info = [[0 for j in range(n + 1)] for i in range(m + 1)]
+    forward_record = [[0 for j in range(n + 1)] for i in range(m + 1)]
 
     for i in range(m + 1):
         opt[i][0] = i * gap_penalty
@@ -25,21 +25,25 @@ def dp_alignment(seq_x, seq_y):
             opt[i][j] = min_cost
 
             if case_1 == min_cost:
-                path_info[i][j] = 1
+                forward_record[i][j] = 1
             elif case_2 == min_cost:
-                path_info[i][j] = 2
+                forward_record[i][j] = 2
             else:
-                path_info[i][j] = 3
+                forward_record[i][j] = 3
 
-    return opt[m][n], path_info
+    return opt[m][n], forward_record
 
 
-def get_dp_alignment(seq_x, seq_y, path_info):
+def get_dp_alignment(seq_x, seq_y, forward_record):
     align_x = ""
     align_y = ""
+    align_path = []
+
     i, j = len(seq_x), len(seq_y)
+
     while i >= 1 or j >= 1:
-        move = path_info[i][j]
+        align_path.append((i, j))
+        move = forward_record[i][j]
         if move == 1:
             align_x = seq_x[i - 1] + align_x
             align_y = seq_y[j - 1] + align_y
@@ -64,25 +68,27 @@ def get_dp_alignment(seq_x, seq_y, path_info):
                 i = i - 1
             else:
                 break
-    return align_x, align_y
+
+    align_path.append((i, j))
+    return align_x, align_y, align_path
 
 
 if __name__ == '__main__':
-    # input_filename = input("Please type in the path of input file: ") or "test_cases/input1.txt"
-    # print("input file is: " + input_filename)
+    # # input_filename = input("Please type in the path of input file: ") or "test_cases/input1.txt"
+    # # print("input file is: " + input_filename)
+    #
+    # input_filename = "test_cases/input1.txt"
+    #
+    # seq_list = parseInput(input_filename)
 
-    input_filename = "test_cases/input1.txt"
-
-    seq_list = parseInput(input_filename)
-
-    # seq_list = ["AGCT", "ACCT"]
+    seq_list = ["AGCT", "ACCT"]
 
     print("**************************** Generated Sequences ****************************")
     for seq in seq_list:
         print(seq)
 
-    opt_cost, path = dp_alignment(*seq_list)
-    alignment_x, alignment_y = get_dp_alignment(seq_list[0], seq_list[1], path)
+    opt_cost, forward_info = dp_alignment(*seq_list)
+    alignment_x, alignment_y, alignment_path = get_dp_alignment(*seq_list, forward_info)
 
     print("**************************** Alignments ****************************")
     print(alignment_x)
