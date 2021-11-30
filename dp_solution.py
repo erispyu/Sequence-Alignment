@@ -1,6 +1,8 @@
+import os
+import psutil
+
 from input_handler import parseInput
-from result_comparator import compare
-from utils import gap_penalty, mismatch_penalty
+from utils import gap_penalty, mismatch_penalty, calculatePenalty, compare_output
 
 
 def dp_alignment(seq_x, seq_y):
@@ -35,58 +37,52 @@ def dp_alignment(seq_x, seq_y):
 def get_alignment(seq_x, seq_y, path_info):
     align_x = ""
     align_y = ""
-    m, n = len(seq_x), len(seq_y)
-    i = m
-    j = n
-    penalty = 0
+    i, j = len(seq_x), len(seq_y)
     while i >= 1 or j >= 1:
         move = path_info[i][j]
         if move == 1:
-            penalty += mismatch_penalty(seq_x[i - 1], seq_y[j - 1])
             align_x = seq_x[i - 1] + align_x
             align_y = seq_y[j - 1] + align_y
             i = i - 1
             j = j - 1
         elif move == 2:
-            penalty += gap_penalty
             align_x = seq_x[i - 1] + align_x
             align_y = "_" + align_y
             i = i - 1
         elif move == 3:
-            penalty += gap_penalty
             align_x = "_" + align_x
             align_y = seq_y[j - 1] + align_y
             j = j - 1
         else:
-            penalty += gap_penalty
             if j >= 1:
                 align_x = "_" + align_x
                 align_y = seq_y[j - 1] + align_y
                 j = j - 1
             elif i >= 1:
-                penalty += gap_penalty
                 align_x = seq_x[i - 1] + align_x
                 align_y = "_" + align_y
                 i = i - 1
             else:
                 break
-    return align_x, align_y, penalty
+    return align_x, align_y
 
 
 if __name__ == '__main__':
     # input_filename = input("Please type in the path of input file: ") or "test_cases/input1.txt"
     # print("input file is: " + input_filename)
-    #
-    # seq_list = parseInput(input_filename)
 
-    seq_list = ["AGCT", "ACCT"]
+    input_filename = "test_cases/input1.txt"
+
+    seq_list = parseInput(input_filename)
+
+    # seq_list = ["AGCT", "ACCT"]
 
     print("**************************** Generated Sequences ****************************")
     for seq in seq_list:
         print(seq)
 
     opt_cost, path = dp_alignment(*seq_list)
-    alignment_x, alignment_y, gen_cost = get_alignment(seq_list[0], seq_list[1], path)
+    alignment_x, alignment_y = get_alignment(seq_list[0], seq_list[1], path)
 
     print("**************************** Alignments ****************************")
     print(alignment_x)
@@ -94,6 +90,9 @@ if __name__ == '__main__':
 
     print("**************************** Cost Comparation ****************************")
     print("Generated:\t" + str(opt_cost))
-    print("Calculated:\t" + str(gen_cost))
+    print("Calculated:\t" + str(calculatePenalty(alignment_x, alignment_y)))
 
-    # compare("test_cases/output1.txt", alignment_x, alignment_y)
+    compare_output("test_cases/output1.txt", alignment_x, alignment_y)
+
+    process = psutil.Process(os.getpid())
+    print(process.memory_info().rss)
