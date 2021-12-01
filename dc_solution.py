@@ -45,11 +45,12 @@ def backward_space_efficient_alignment(seq_x, seq_y):
 
 def dc_alignment(seq_x, seq_y, path):
     m, n = len(seq_x), len(seq_y)
-    half_n = math.floor(n / 2)
+    half_n = int(math.floor(n / 2))
 
     if m <= 2 or n <= 2:
         cost, forward_info = dp_alignment(seq_x, seq_y)
-        align_x, align_y, path = get_dp_alignment(seq_x, seq_y, forward_info)
+        align_x, align_y, dp_path = get_dp_alignment(seq_x, seq_y, forward_info)
+        path.extend(dp_path)
         return path
 
     forward_cost = space_efficient_alignment(seq_x, seq_y[:half_n])
@@ -74,7 +75,7 @@ if __name__ == '__main__':
     # input_filename = "test_cases/input1.txt"
     # seq_list = parseInput(input_filename)
 
-    seq_list = ["AG", "AC"]
+    seq_list = ["AGTCATC", "TGATCATGGAC"]
 
     result = dc_alignment(*seq_list, path=[])
     print(result)
