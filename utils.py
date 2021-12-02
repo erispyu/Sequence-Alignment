@@ -47,13 +47,19 @@ def compare_output(filename, align_x, align_y):
     align_tails.append(align_y[-length:])
 
     with open(filename, 'r') as f:
-        headers = f.readline().strip().split()
-        tails = f.readline().strip().split()
+        given_align_x = f.readline().strip().split()
+        given_align_y = f.readline().strip().split()
 
-    for i in range(2):
-        print("********************************** Headers **********************************")
-        print(align_headers[i])
-        print(headers[i])
-        print("*********************************** Tails ***********************************")
-        print(align_tails[i])
-        print(tails[i])
+    print("****************************** Align x: Headers ******************************")
+    print(align_headers[0])
+    print(given_align_x[0])
+    print("******************************* Align x: Tails *******************************")
+    print(align_tails[0])
+    print(given_align_x[1])
+
+    print("****************************** Align y: Headers ******************************")
+    print(align_headers[1])
+    print(given_align_y[0])
+    print("******************************* Align y: Tails *******************************")
+    print(align_tails[1])
+    print(given_align_y[1])
