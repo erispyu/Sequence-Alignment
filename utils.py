@@ -120,21 +120,20 @@ def compare_output(filename, align_x, align_y):
 
 
 def generate_plot_seq_list(n):
-    base_strings = ["ACTG", "TACG"]
+    char_list = ["A", "G", "C", "T"]
+
     seq_list = []
+    seq_x = ""
+    seq_y = ""
 
-    generate_rule_x = []
-    generate_rule_y = []
     for i in range(n):
-        rule_x = randint(1, 9)
-        generate_rule_x.append(rule_x)
-        rule_y = randint(1, 9)
-        generate_rule_y.append(rule_y)
+        x = randint(0, 3)
+        y = randint(0, 3)
+        seq_x += char_list[x]
+        seq_y += char_list[y]
 
-    seq_list.append(_generate_sequence(base_strings[0], generate_rule_x))
-    seq_list.append(_generate_sequence(base_strings[1], generate_rule_y))
+    seq_list.append(seq_x)
+    seq_list.append(seq_y)
 
-    problem_size = len(seq_list[0])
-
-    return seq_list, problem_size
+    return seq_list
 

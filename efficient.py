@@ -78,12 +78,12 @@ def run(sequences):
     return align_x, align_y, cost, time_sec, mem_kb
 
 
-def plot(n=21):
+def plot(n=1300):
     with open('plot-efficient.txt', 'w') as f:
-        for i in range(1, n):
-            sequences, problem_size = generate_plot_seq_list(i)
+        for i in range(n):
+            sequences= generate_plot_seq_list(i)
             align_x, align_y, cost, time_sec, mem_kb = run(sequences)
-            f.write(str(problem_size) + "\t" + str(time_sec) + "\t" + str(mem_kb) + "\n")
+            f.write(str(i) + "\t" + str(time_sec) + "\t" + str(mem_kb) + "\n")
 
 
 if __name__ == '__main__':
