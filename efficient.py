@@ -42,7 +42,7 @@ def dc_alignment(seq_x, seq_y):
         align_x, align_y, alignment_path = get_dp_alignment(seq_x, seq_y, forward_record=forward_info)
 
     else:
-        x_mid = m / 2
+        x_mid = int(m / 2)
 
         cost_left = space_efficient_alignment(seq_x[:x_mid], seq_y)
         cost_right = space_efficient_alignment(seq_x[x_mid:][::-1], seq_y[::-1])
