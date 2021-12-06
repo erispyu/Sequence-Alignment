@@ -1,4 +1,6 @@
 import os
+import sys
+
 import psutil
 
 from input_handler import parseInput
@@ -74,31 +76,28 @@ def get_dp_alignment(seq_x, seq_y, forward_record):
 
 
 if __name__ == '__main__':
-    input_filename = "test_cases/input1.txt"
+    input_filename = sys.argv[1]
 
     seq_list = parseInput(input_filename)
 
-    # seq_list = ["AGCT", "ACCT"]
-    # seq_list = ["AG", "TA"]
-
-    print("**************************** Generated Sequences ****************************")
-    for seq in seq_list:
-        print(seq)
+    # print("**************************** Generated Sequences ****************************")
+    # for seq in seq_list:
+    #     print(seq)
 
     opt_cost, forward_info = dp_alignment(*seq_list)
     alignment_x, alignment_y, alignment_path = get_dp_alignment(*seq_list, forward_record=forward_info)
 
-    print("**************************** Alignments ****************************")
-    print(alignment_x)
-    print(alignment_y)
-    print("cost = " + str(opt_cost))
-    print("path = " + str(alignment_path))
-
-    print("**************************** Cost Compare ****************************")
-    print("Generated:\t" + str(opt_cost))
-    print("Calculated:\t" + str(calculatePenalty(alignment_x, alignment_y)))
-
-    compare_output("test_cases/output1.txt", alignment_x, alignment_y)
+    # print("**************************** Alignments ****************************")
+    # print(alignment_x)
+    # print(alignment_y)
+    # print("cost = " + str(opt_cost))
+    # print("path = " + str(alignment_path))
+    #
+    # print("**************************** Cost Compare ****************************")
+    # print("Generated:\t" + str(opt_cost))
+    # print("Calculated:\t" + str(calculatePenalty(alignment_x, alignment_y)))
+    #
+    # compare_output("test_cases/output1.txt", alignment_x, alignment_y)
 
     process = psutil.Process(os.getpid())
     print(process.memory_info().rss)
