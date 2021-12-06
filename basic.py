@@ -77,8 +77,8 @@ def get_dp_alignment(seq_x, seq_y, forward_record):
 
 def run(sequences):
     start_time = time.time()
-    cost, forward_info = dp_alignment(*seq_list)
-    align_x, align_y, alignment_path = get_dp_alignment(*seq_list, forward_record=forward_info)
+    cost, forward_info = dp_alignment(*sequences)
+    align_x, align_y, alignment_path = get_dp_alignment(*sequences, forward_record=forward_info)
     end_time = time.time()
     time_sec = end_time - start_time
 
@@ -88,11 +88,11 @@ def run(sequences):
     return align_x, align_y, cost, time_sec, mem_kb
 
 
-def plot():
+def plot(n=21):
     with open('plot-basic.txt', 'w') as f:
-        for i in range(1, 21):
+        for i in range(1, n):
             sequences, problem_size = generate_plot_seq_list(i)
-            align_x, align_y, cost, time_sec, mem_kb = run(seq_list)
+            align_x, align_y, cost, time_sec, mem_kb = run(sequences)
             f.write(str(problem_size) + "\t" + str(time_sec) + "\t" + str(mem_kb) + "\n")
 
 
@@ -103,3 +103,4 @@ if __name__ == '__main__':
     alignment_x, alignment_y, opt_cost, time_used, mem_used = run(seq_list)
 
     generate_output(alignment_x, alignment_y, str(opt_cost), str(time_used), str(mem_used))
+    # plot()
