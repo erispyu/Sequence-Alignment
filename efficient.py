@@ -6,7 +6,7 @@ import time
 import psutil
 
 from utils import gap_penalty, mismatch_penalty, parse_input, calculatePenalty, compare_output, generate_output
-from dp_solution import dp_alignment, get_dp_alignment
+from basic import dp_alignment, get_dp_alignment
 
 
 def space_efficient_alignment(seq_x, seq_y):
