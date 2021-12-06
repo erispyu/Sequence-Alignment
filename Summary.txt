@@ -1,0 +1,13 @@
+1. Plot Design:
+I have executed the basic version and the space efficient version sequence alignment on sequences with size 0 to 1299, and collect the corresponding CPU time usage and memory usage to generate the plot graphs.
+
+2. Results and observations:
+(1) The two version's time usage is growing in step with each other, while the space efficient version has a higher time usage.
+(2) The memory usage is quite so different.
+    The space-efficient version remains at a very low usage under 10000 KB.
+    However, the basic version's memory grows very fast and become extremely large.
+(3) One interesting fact is that when problem size step from 535 to 536, the memory usage drop from 9384 KB to 5584 KB, and then go on slowly growing.
+    I think this case is caused by the fact that as the problem size grows, we have many common sub-problems, which can be reused.
+
+3. Team Information:
+
