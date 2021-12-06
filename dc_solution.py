@@ -1,11 +1,11 @@
 import math
 import os
 import sys
+import time
 
 import psutil
 
-from input_handler import parseInput
-from utils import gap_penalty, mismatch_penalty, calculatePenalty, compare_output
+from utils import gap_penalty, mismatch_penalty, parse_input, calculatePenalty, compare_output, generate_output
 from dp_solution import dp_alignment, get_dp_alignment
 
 
@@ -65,10 +65,21 @@ def dc_alignment(seq_x, seq_y):
 
 if __name__ == '__main__':
     input_filename = sys.argv[1]
-    seq_list = parseInput(input_filename)
+    seq_list = parse_input(input_filename)
 
+    start_time = time.time()
     alignment_x, alignment_y = dc_alignment(*seq_list)
+    end_time = time.time()
+    time_used = end_time - start_time
+
     # print(alignment_x)
     # print(alignment_y)
     # print(calculatePenalty(alignment_x, alignment_y))
     # compare_output("test_cases/output1.txt", alignment_x, alignment_y)
+
+    opt_cost = calculatePenalty(alignment_x, alignment_y)
+
+    process = psutil.Process(os.getpid())
+    mem_used = process.memory_info().rss / 1024.0  # in KB
+
+    generate_output(alignment_x, alignment_y, str(opt_cost), str(time_used), str(mem_used))

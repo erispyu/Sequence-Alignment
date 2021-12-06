@@ -34,6 +34,58 @@ def calculatePenalty(align_x, align_y):
     return penalty
 
 
+def _generate_sequence(base_string, generate_rule):
+    sequence = base_string
+    for rule in generate_rule:
+        sequence = sequence[:rule + 1] + base_string + sequence[rule + 1:]
+        base_string = sequence
+    return sequence
+
+
+def parse_input(filename):
+    sequence_list = []
+
+    with open(filename, 'r') as f:
+        base_string_x = f.readline().strip()
+        generate_rule_x = []
+        while True:
+            line = f.readline().strip()
+            if line.isdigit():
+                generate_rule_x.append(int(line))
+            else:
+                base_string_y = line
+                break
+        sequence_list.append(_generate_sequence(base_string_x, generate_rule_x))
+
+        generate_rule_y = []
+        while True:
+            line = f.readline().strip()
+            if line.isdigit():
+                generate_rule_y.append(int(line))
+            else:
+                break
+        sequence_list.append(_generate_sequence(base_string_y, generate_rule_y))
+
+    return sequence_list
+
+
+def _tail_alignments(align_x, align_y, length = 50):
+    tailed_align_x = align_x[:length] + " " + align_x[-length:]
+    tailed_align_y = align_y[:length] + " " + align_y[-length:]
+
+    return tailed_align_x, tailed_align_y
+
+
+def generate_output(align_x, align_y, cost, time_used, mem_used):
+    tailed_align_x, tailed_align_y = _tail_alignments(align_x, align_y)
+    with open('output.txt', 'w') as f:
+        f.write(tailed_align_x + "\n")
+        f.write(tailed_align_y + "\n")
+        f.write(cost + "\n")
+        f.write(time_used + "\n")
+        f.write(mem_used + "\n")
+
+
 def compare_output(filename, align_x, align_y):
     align_headers = []
     align_tails = []
