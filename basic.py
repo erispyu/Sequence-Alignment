@@ -4,7 +4,7 @@ import time
 
 import psutil
 
-from utils import gap_penalty, mismatch_penalty, parse_input, calculatePenalty, compare_output, generate_output
+from utils import gap_penalty, mismatch_penalty, parse_input, calculatePenalty, compare_output, generate_output, generate_plot_seq_list
 
 
 def dp_alignment(seq_x, seq_y):
@@ -75,34 +75,31 @@ def get_dp_alignment(seq_x, seq_y, forward_record):
     return align_x, align_y, align_path
 
 
-if __name__ == '__main__':
-    input_filename = sys.argv[1]
-
-    seq_list = parse_input(input_filename)
-
-    # print("**************************** Generated Sequences ****************************")
-    # for seq in seq_list:
-    #     print(seq)
-
+def run(sequences):
     start_time = time.time()
-    opt_cost, forward_info = dp_alignment(*seq_list)
-    alignment_x, alignment_y, alignment_path = get_dp_alignment(*seq_list, forward_record=forward_info)
+    cost, forward_info = dp_alignment(*seq_list)
+    align_x, align_y, alignment_path = get_dp_alignment(*seq_list, forward_record=forward_info)
     end_time = time.time()
-    time_used = end_time - start_time
-
-    # print("**************************** Alignments ****************************")
-    # print(alignment_x)
-    # print(alignment_y)
-    # print("cost = " + str(opt_cost))
-    # print("path = " + str(alignment_path))
-    #
-    # print("**************************** Cost Compare ****************************")
-    # print("Generated:\t" + str(opt_cost))
-    # print("Calculated:\t" + str(calculatePenalty(alignment_x, alignment_y)))
-    #
-    # compare_output("test_cases/output1.txt", alignment_x, alignment_y)
+    time_sec = end_time - start_time
 
     process = psutil.Process(os.getpid())
-    mem_used = process.memory_info().rss / 1024.0  # in KB
+    mem_kb = process.memory_info().rss / 1024.0  # in KB
+
+    return align_x, align_y, cost, time_sec, mem_kb
+
+
+def plot():
+    with open('plot-basic.txt', 'w') as f:
+        for i in range(1, 21):
+            sequences, problem_size = generate_plot_seq_list(i)
+            align_x, align_y, cost, time_sec, mem_kb = run(seq_list)
+            f.write(str(problem_size) + "\t" + str(time_sec) + "\t" + str(mem_kb) + "\n")
+
+
+if __name__ == '__main__':
+    input_filename = sys.argv[1]
+    seq_list = parse_input(input_filename)
+
+    alignment_x, alignment_y, opt_cost, time_used, mem_used = run(seq_list)
 
     generate_output(alignment_x, alignment_y, str(opt_cost), str(time_used), str(mem_used))

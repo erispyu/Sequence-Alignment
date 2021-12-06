@@ -1,3 +1,5 @@
+from random import randint
+
 gap_penalty = 30
 
 _letter_dict = {
@@ -115,3 +117,24 @@ def compare_output(filename, align_x, align_y):
     print("******************************* Align y: Tails *******************************")
     print(align_tails[1])
     print(given_align_y[1])
+
+
+def generate_plot_seq_list(n):
+    base_strings = ["ACTG", "TACG"]
+    seq_list = []
+
+    generate_rule_x = []
+    generate_rule_y = []
+    for i in range(n):
+        rule_x = randint(1, 9)
+        generate_rule_x.append(rule_x)
+        rule_y = randint(1, 9)
+        generate_rule_y.append(rule_y)
+
+    seq_list.append(_generate_sequence(base_strings[0], generate_rule_x))
+    seq_list.append(_generate_sequence(base_strings[1], generate_rule_y))
+
+    problem_size = len(seq_list[0])
+
+    return seq_list, problem_size
+
